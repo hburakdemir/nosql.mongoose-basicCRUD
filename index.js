@@ -1,33 +1,28 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const Product = require('./models/product.model.js');
-const productRoute = require("./routes/product.route.js");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const connectDB = require("./db/connect");
+const productRoute = require("./routes/productRoute");
+const cartRoutes = require("./routes/cartRoutes");
+const authRoutes = require("./routes/authRoutes");
+
+dotenv.config();
+connectDB();
+
+
+
 const app = express();
 
-
-
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({extended:false}))
+app.use(express.urlencoded({ extended: false }));
 
-
-app.get("/", (req, res) => {
-  res.send("Hello from node API server");
-});
-
-
+app.get("/", (req, res) => res.send("Hello from API"));
 
 app.use("/api/products", productRoute);
-mongoose
-  .connect(
-    "mongodb+srv://burak:FzEs657cnjp8VfWD@datateam-backend.4pa5t0o.mongodb.net/?retryWrites=true&w=majority&appName=datateam-backend"
-  )
-  .then(() => {
-    console.log("connected to db");
-  })
-  .catch(() => {
-    console.log("not connected to db");
-  });
+app.use("/api/carts", cartRoutes);
+app.use("/api/auth", authRoutes);
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+
+const PORT = process.env.PORT || 3406;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
