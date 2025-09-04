@@ -2,7 +2,8 @@ const Cart = require("../models/cartModel");
 
 // Sepete ürün ekleme
 const addToCart = async (req, res) => {
-  const { userId, productId } = req.body;
+  const { productId } = req.body;
+  const userId = req.user.id; // ✅ artık buradan geliyor
 
   try {
     let cart = await Cart.findOne({ userId });
@@ -10,16 +11,14 @@ const addToCart = async (req, res) => {
     if (!cart) {
       cart = new Cart({ userId, products: [{ productId, quantity: 1 }] });
     } else {
-      // Ürün sepettemi 
+      // Ürün sepette mi?
       const itemIndex = cart.products.findIndex(
         (p) => p.productId.toString() === productId
       );
 
       if (itemIndex > -1) {
-        // sepette adet arttır
-        cart.products[itemIndex].quantity += 1;
+        cart.products[itemIndex].quantity += 1; // adet arttır
       } else {
-        // yoksa ekle
         cart.products.push({ productId, quantity: 1 });
       }
     }
@@ -31,13 +30,13 @@ const addToCart = async (req, res) => {
   }
 };
 
-
+// Sepetten ürün çıkarma
 const removeFromCart = async (req, res) => {
-  const { userId, productId } = req.body;
+  const { productId } = req.body;
+  const userId = req.user.id; // ✅
 
   try {
     let cart = await Cart.findOne({ userId });
-
     if (!cart) return res.status(404).json({ message: "Cart not found" });
 
     cart.products = cart.products.filter(
@@ -51,9 +50,9 @@ const removeFromCart = async (req, res) => {
   }
 };
 
-
+// Kullanıcının sepetini getirme
 const getCart = async (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user.id; // ✅
 
   try {
     const cart = await Cart.findOne({ userId }).populate("products.productId");
