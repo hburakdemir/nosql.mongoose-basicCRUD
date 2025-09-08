@@ -5,9 +5,9 @@ const addComment = async (req, res) => {
 
   try {
     const { productId, text } = req.body;
-    const userId = req.user.id; // auth middleware'den geliyor
-      console.log("req.user:", req.user);       // token decode kontrolü
-  console.log("req.body:", req.body);  
+      const userId = req.user.id; 
+      console.log("req.user:", req.user);       
+      console.log("req.body:", req.body);  
 
     if (!text) {
       return res.status(400).json({ success: false, message: "Yorum boş olamaz" });
@@ -41,8 +41,8 @@ const getCommentsByProduct = async (req, res) => {
     }
 
     const comments = await Comment.find({ product: productId })
-      .populate("user", "name email") // sadece name ve email gelsin
-      .sort({ createdAt: -1 }); // en yeni yorum en başta
+  .populate("user", "_id name email") // artık _id de geliyor
+  .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -61,10 +61,7 @@ const deleteComment = async (req, res) => {
   try {
     const { commentId } = req.params;
     const userId = req.user.id; 
-    
-   
 
-    // Yorumu bul
     const comment = await Comment.findById(commentId);
     if (!comment) {
       return res.status(404).json({ success: false, message: "Yorum bulunamadı" });

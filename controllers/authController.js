@@ -2,7 +2,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/authModel");
-const { validateEmail, validatePassword } = require("../helpers/validation");
+const { validateEmail, validatePassword,emailZod } = require("../helpers/validation");
 
 // REGISTER
 const register = async (req, res) => {
@@ -12,7 +12,7 @@ const register = async (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  if (!validateEmail(email)) {
+  if (!emailZod(email)) {
     return res
       .status(400)
       .json({ message: "Email must be: email@example.com" });
@@ -46,7 +46,6 @@ const register = async (req, res) => {
   }
 };
 
-// LOGIN
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -62,19 +61,22 @@ const login = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, username: user.name, email: user.email },
       process.env.JWT_SECRET,
-      {
-        expiresIn: "1h",
-      }
+      { expiresIn: "1h" }
     );
+
+    
+    const decoded = jwt.decode(token);
 
     res.json({
       token,
       user: { id: user._id, name: user.name, email: user.email },
+      decodedToken: decoded, 
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 module.exports = { register, login };

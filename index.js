@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 
+
 dotenv.config();
 connectDB();
 
