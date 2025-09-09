@@ -1,3 +1,4 @@
+
 const Comment = require("../models/commentModel");
 
 // Yorum ekleme
@@ -55,6 +56,31 @@ const getCommentsByProduct = async (req, res) => {
   }
 };
 
+
+const getCommentsByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "user ID gerekli" });
+    }
+
+    const comments = await Comment.find({ user: userId })
+   .populate("product", "_id name images price")
+  .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: comments.length,
+      comments,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Yorumlar alınırken bir hata oluştu" });
+  }
+};
+
+
 const deleteComment = async (req, res) => {
   console.log("commentId param:", req.params.commentId);
 
@@ -81,4 +107,7 @@ const deleteComment = async (req, res) => {
   }
 };
 
-module.exports = { addComment, getCommentsByProduct,deleteComment };
+
+
+
+module.exports = { addComment, getCommentsByProduct,deleteComment,getCommentsByUser };
