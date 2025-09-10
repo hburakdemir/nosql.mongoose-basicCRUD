@@ -20,7 +20,7 @@ const upload = multer({ storage });
 
 const createProduct = async (req, res) => {
   try {
-    const { name, quantity, price,section } = req.body;
+    const { name, quantity, price,section,gender } = req.body;
     const imageUrls = [];
 
     if (req.files && req.files.length > 0) {
@@ -45,6 +45,7 @@ const createProduct = async (req, res) => {
       price,
       section,
       images: imageUrls,
+      gender,
     });
 
     await product.save();

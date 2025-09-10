@@ -9,6 +9,7 @@ const ProductSchema = new mongoose.Schema(
     section: { type: String, required: true },
     material: { type: String, required: false },
     baseType: { type: String,  enum: ["clothing", "shoes", "accessory"], required: false },
+    gender: { type: String, enum:["man","woman","chield","unisex"], required:false},
     size: {
       type: String,
       enum: ["XS","S", "M", "L", "XL", "2XL","3XL"],

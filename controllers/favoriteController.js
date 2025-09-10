@@ -1,21 +1,21 @@
 const Favorite = require("../models/favoriteModel");
 
-// Favori ekleme veya çıkarma (toggle)
+
 const favoriteToggle = async (req, res) => {
   try {
     const userId = req.user.id;
     const productId = req.params.productId;
 
-    // Daha önce favorilenmiş mi kontrol et
+ 
     const existing = await Favorite.findOne({ user: userId, product: productId });
 
     if (existing) {
-      // Varsa sil
+    
       await Favorite.deleteOne({ _id: existing._id });
       return res.json({ message: "Removed from favorites", removed: true });
     } else {
-      // Yoksa ekle
-      const favorite = new Favorite({ user: userId, product: productId });
+     
+      const favorite = new Favorite({ user: userId, product: productId });  
       await favorite.save();
       return res.json({ message: "Added to favorites", favorite, added: true });
     }
@@ -25,7 +25,7 @@ const favoriteToggle = async (req, res) => {
   }
 };
 
-// Kullanıcının favorilerini listeleme
+
 const getFavorites = async (req, res) => {
   try {
     const userId = req.user.id;
